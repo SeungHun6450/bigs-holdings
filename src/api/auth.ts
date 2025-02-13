@@ -82,3 +82,67 @@ export const fetchPosts = async (token: string, page: number, size: number) => {
 
   return await response.json();
 };
+
+// 게시글 상세 조회 API
+export const fetchOnePost = async (token: string, id: number) => {
+  const response = await fetch(
+    `https://front-mission.bigs.or.kr/boards/${id}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error("게시글 상세 조회에 실패했습니다.");
+  }
+
+  return await response.json();
+};
+
+// 게시글 등록 API
+export const createPost = async (
+  token: string,
+  postData: {
+    title: string;
+    content: string;
+    category: string;
+    file?: File | null; // 파일은 선택
+  },
+) => {
+  const formData = new FormData();
+
+  formData.append(
+    "request",
+    new Blob(
+      [
+        JSON.stringify({
+          title: postData.title,
+          content: postData.content,
+          category: postData.category,
+        }),
+      ],
+      { type: "application/json" },
+    ),
+  );
+
+  if (postData.file) {
+    formData.append("file", postData.file);
+  }
+
+  const response = await fetch("https://front-mission.bigs.or.kr/boards", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error("게시글 등록에 실패했습니다.");
+  }
+
+  return await response.json();
+};

@@ -7,6 +7,7 @@ export const useAuth = () => {
   const [token, setToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const isChecking = useRef(false); // 중복 실행 방지
 
@@ -44,5 +45,5 @@ export const useAuth = () => {
     checkAndRefreshToken();
   }, [router, isRedirecting]);
 
-  return { token, error };
+  return { token, error, loading };
 };
