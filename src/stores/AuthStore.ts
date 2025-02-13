@@ -6,6 +6,20 @@ class AuthStore {
 
   constructor() {
     makeAutoObservable(this);
+
+    // SSR에서 실행되는 로직, Next.js이기에 발생
+    if (typeof window !== "undefined") {
+      // 로컬스토리지에서 토큰 가져오기
+      const storedAccessToken = localStorage.getItem("accessToken");
+      const storedRefreshToken = localStorage.getItem("refreshToken");
+
+      if (storedAccessToken) {
+        this.accessToken = storedAccessToken;
+      }
+      if (storedRefreshToken) {
+        this.refreshToken = storedRefreshToken;
+      }
+    }
   }
 
   setTokens(accessToken: string, refreshToken: string) {

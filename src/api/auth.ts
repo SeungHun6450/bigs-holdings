@@ -44,3 +44,41 @@ export const signIn = async (userData: {
 
   return response.json();
 };
+
+// 게시판 카테고리 조회 API
+export const fetchCategories = async (token: string) => {
+  const response = await fetch(
+    "https://front-mission.bigs.or.kr/boards/categories",
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error("카테고리를 불러오는 데 실패했습니다.");
+  }
+
+  return await response.json();
+};
+
+// 게시글 목록 조회 API
+export const fetchPosts = async (token: string, page: number, size: number) => {
+  const response = await fetch(
+    `https://front-mission.bigs.or.kr/boards?page=${page}&size=${size}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error("게시글을 불러오는 데 실패했습니다.");
+  }
+
+  return await response.json();
+};
