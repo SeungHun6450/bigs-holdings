@@ -39,7 +39,7 @@ const BoardRegister = () => {
         content,
         category: category.toUpperCase(),
       });
-      router.push("/board");
+      router.push("0");
     } catch (err: any) {
       console.error(err);
     }

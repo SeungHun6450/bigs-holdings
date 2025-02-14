@@ -25,7 +25,7 @@ const BoardModify = () => {
   useEffect(() => {
     if (post && post.id === -1) {
       alert("올바른 게시판이 아닙니다.");
-      router.push("/board");
+      router.push("/board?page=0");
     } else {
       setTitle(post.title);
       setContent(post.content);
@@ -54,7 +54,7 @@ const BoardModify = () => {
         category: boardCategory.toUpperCase(),
       });
       alert("게시글이 수정되었습니다!");
-      router.push("/board");
+      router.push("/board?page=0");
     } catch (err: any) {
       console.error(err);
     }

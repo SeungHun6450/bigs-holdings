@@ -6,19 +6,21 @@ export const useBoardData = (token: string) => {
   const [posts, setPosts] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [totalPages, setTotalPages] = useState<number>(0);
 
-  const refreshAndLoadBoardData = async () => {
+  const refreshAndLoadBoardData = async (page: number) => {
     if (!token) return;
 
     setLoading(true);
 
     try {
-      // 카테고리 및 게시글 데이터 로드
       const categoriesData = await fetchCategories(token);
-      const postsData = await fetchPosts(token, 0, 10);
+      const postsData = await fetchPosts(token, page, 10);
 
       setCategories(categoriesData);
       setPosts(postsData.content);
+      setTotalPages(postsData.totalPages);
       setError(null);
     } catch (err: any) {
       setError(err.message);
@@ -27,9 +29,26 @@ export const useBoardData = (token: string) => {
     setLoading(false);
   };
 
-  useEffect(() => {
-    refreshAndLoadBoardData();
-  }, [token]);
+  const loadPage = (page: number) => {
+    setCurrentPage(page);
+    refreshAndLoadBoardData(page);
+  };
 
-  return { categories, posts, error, loading, refreshAndLoadBoardData };
+  useEffect(() => {
+    if (token) {
+      refreshAndLoadBoardData(currentPage); // currentPage가 변경될 때마다 데이터 불러오기
+    }
+  }, [token, currentPage]);
+  console.log(currentPage);
+
+  return {
+    categories,
+    posts,
+    error,
+    loading,
+    currentPage,
+    totalPages,
+    refreshAndLoadBoardData,
+    loadPage,
+  };
 };

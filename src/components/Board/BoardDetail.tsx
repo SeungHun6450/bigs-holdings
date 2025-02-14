@@ -41,7 +41,7 @@ const PostDetail = ({ detail }: { detail: string }) => {
     try {
       await deletePost(token || "", id);
       alert("게시글이 삭제되었습니다!");
-      router.push("/board");
+      router.push("/board?page=0");
     } catch (err) {
       console.error("게시글 삭제 오류:", err);
     }
