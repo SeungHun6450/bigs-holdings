@@ -146,3 +146,71 @@ export const createPost = async (
 
   return await response.json();
 };
+
+// 게시글 수정 API
+export const updatePost = async (
+  token: string,
+  id: number,
+  postData: {
+    title: string;
+    content: string;
+    category: string;
+    file?: File | null; // 파일은 선택 사항
+  },
+) => {
+  const formData = new FormData();
+
+  formData.append(
+    "request",
+    new Blob(
+      [
+        JSON.stringify({
+          title: postData.title,
+          content: postData.content,
+          category: postData.category,
+        }),
+      ],
+      { type: "application/json" },
+    ),
+  );
+
+  if (postData.file) {
+    formData.append("file", postData.file);
+  }
+
+  const response = await fetch(
+    `https://front-mission.bigs.or.kr/boards/${id}`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error("게시글 수정에 실패했습니다.");
+  }
+
+  // SyntaxError: Failed to execute 'json' on 'Response': Unexpected end of JSON input
+  // 위의 에러 발생으로 등록 API와 다르게 .json() 삭제
+  return await response;
+};
+
+// 게시글 삭제 API
+export const deletePost = async (token: string, id: number) => {
+  const response = await fetch(
+    `https://front-mission.bigs.or.kr/boards/${id}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error("게시글 삭제에 실패했습니다.");
+  }
+};

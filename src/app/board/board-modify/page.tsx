@@ -1,5 +1,7 @@
+import BoardModify from "@/components/Board/BoardModify";
+
 const page = () => {
-  return <div>page</div>;
+  return <BoardModify />;
 };
 
 export default page;

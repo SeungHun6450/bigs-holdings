@@ -1,7 +1,8 @@
 "use client";
 
-import { createPost } from "@/api/auth";
+import { updatePost } from "@/api/auth";
 import { useAuth } from "@/hooks/useAuth";
+import boardStore from "@/stores/BoardStore";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 
@@ -12,12 +13,25 @@ const CATEGORIES = [
   { key: "qna", label: "Q&A" },
 ];
 
-const BoardRegister = () => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [category, setCategory] = useState("");
+const BoardModify = () => {
   const router = useRouter();
   const { token, loading } = useAuth();
+  const post = boardStore.selectedPost;
+
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [boardCategory, setBoardCategory] = useState("");
+
+  useEffect(() => {
+    if (post && post.id === -1) {
+      alert("올바른 게시판이 아닙니다.");
+      router.push("/board");
+    } else {
+      setTitle(post.title);
+      setContent(post.content);
+      setBoardCategory(post.boardCategory);
+    }
+  }, [post]);
 
   useEffect(() => {
     if (!loading && !token) {
@@ -34,11 +48,12 @@ const BoardRegister = () => {
     }
 
     try {
-      await createPost(token, {
+      await updatePost(token, post.id, {
         title,
         content,
-        category: category.toUpperCase(),
+        category: boardCategory.toUpperCase(),
       });
+      alert("게시글이 수정되었습니다!");
       router.push("/board");
     } catch (err: any) {
       console.error(err);
@@ -75,8 +90,8 @@ const BoardRegister = () => {
         <div className="flex flex-row justify-start mt-4 w-full">
           <label className="block text-lg font-bold w-20">카테고리</label>
           <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            value={boardCategory.toLowerCase()}
+            onChange={(e) => setBoardCategory(e.target.value)}
             required
             className="border-2 rounded-sm w-full max-w-48"
           >
@@ -88,15 +103,16 @@ const BoardRegister = () => {
             ))}
           </select>
         </div>
+
         <button
           type="submit"
           className="bg-[#2aa7be] text-white py-2 px-4 mt-4 rounded-md hover:bg-[#3590a0]"
         >
-          게시글 등록
+          수정 완료
         </button>
       </form>
     </div>
   );
 };
 
-export default BoardRegister;
+export default BoardModify;

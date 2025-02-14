@@ -26,7 +26,7 @@ const SignIn = () => {
       authStore.setTokens(accessToken, refreshToken); // 스토어에 토큰 저장
       setSuccess("로그인 성공!");
       setError("");
-      router.push("/board/notice"); // 로그인 후 게시판 페이지로 이동
+      router.push("/board"); // 로그인 후 게시판 페이지로 이동
     } catch (err: any) {
       setError("로그인에 실패했습니다. 아이디나 비밀번호를 확인 해주세요!");
       setSuccess("");

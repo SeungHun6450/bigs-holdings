@@ -7,31 +7,29 @@ export const useBoardData = (token: string) => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
+  const refreshAndLoadBoardData = async () => {
     if (!token) return;
 
-    const refreshAndLoadBoardData = async () => {
-      try {
-        setLoading(true);
+    setLoading(true);
 
-        if (!token) return;
+    try {
+      // 카테고리 및 게시글 데이터 로드
+      const categoriesData = await fetchCategories(token);
+      const postsData = await fetchPosts(token, 0, 10);
 
-        // 카테고리 및 게시글 데이터 로드
-        const categoriesData = await fetchCategories(token);
-        const postsData = await fetchPosts(token, 0, 10);
+      setCategories(categoriesData);
+      setPosts(postsData.content);
+      setError(null);
+    } catch (err: any) {
+      setError(err.message);
+    }
 
-        setCategories(categoriesData);
-        setPosts(postsData.content);
-        setError(null);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+    setLoading(false);
+  };
 
+  useEffect(() => {
     refreshAndLoadBoardData();
   }, [token]);
 
-  return { categories, posts, error, loading };
+  return { categories, posts, error, loading, refreshAndLoadBoardData };
 };
