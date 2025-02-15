@@ -9,6 +9,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useAuth } from "@/hooks/useAuth";
+import authStore from "@/stores/AuthStore";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
@@ -67,6 +68,11 @@ const Board = () => {
     router.push(`/board?page=${newPage}`);
   };
 
+  const loggedOut = () => {
+    authStore.clearTokens();
+    router.push("/");
+  };
+
   return (
     <div className="flex flex-col items-center min-h-screen m-4">
       <Link href="/board/?page=0">
@@ -79,6 +85,14 @@ const Board = () => {
             글쓰기
           </button>
         </Link>
+        {token && (
+          <button
+            onClick={loggedOut}
+            className="bg-[#798385] text-white px-4 py-1.5 rounded hover:bg-[#a5b2b4]"
+          >
+            로그아웃
+          </button>
+        )}
       </div>
 
       <div>
