@@ -27,7 +27,7 @@ const Board = () => {
   const page = Number(searchParams.get("page")) || 0;
 
   useEffect(() => {
-    if (!loading && !token) {
+    if (typeof window !== "undefined" && !loading && !token) {
       alert("로그인 후 이용 가능합니다.");
       router.push("/");
     }

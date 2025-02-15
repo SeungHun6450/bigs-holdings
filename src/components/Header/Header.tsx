@@ -17,15 +17,20 @@ const Header = observer(() => {
     name: string;
     username: string;
   } | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (!loading && authStore.accessToken) {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isMounted && !loading && authStore.accessToken) {
       const user = getUserInfo(authStore.accessToken);
       setUserInfo({ name: user?.name, username: user?.username });
     } else {
       setUserInfo(null);
     }
-  }, [authStore.accessToken, loading, authStore]);
+  }, [authStore.accessToken, loading, authStore, isMounted]);
 
   const signOut = () => {
     if (confirm("로그아웃 하시겠습니까?")) {
@@ -35,6 +40,8 @@ const Header = observer(() => {
       router.push("/");
     }
   };
+
+  if (!isMounted) return null;
 
   return (
     <div className="flex justify-between items-center w-full px-4 h-16 bg-white">
