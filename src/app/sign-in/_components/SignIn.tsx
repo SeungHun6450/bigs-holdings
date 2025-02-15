@@ -17,7 +17,7 @@ const SignIn = () => {
 
   useEffect(() => {
     if (token) {
-      window.location.href = "/board?page=0";
+      router.push("/board?page=0");
     }
   }, [token]);
 
@@ -31,11 +31,11 @@ const SignIn = () => {
 
     try {
       const response = await signIn(data);
-      const { accessToken, refreshToken } = response; // accessToken과 refreshToken을 받기
-      authStore.setTokens(accessToken, refreshToken); // 스토어에 토큰 저장
+      const { accessToken, refreshToken } = response;
+      authStore.setTokens(accessToken, refreshToken);
       setSuccess("로그인 성공!");
       setError("");
-      router.push("/board?page=0"); // 로그인 후 게시판 페이지로 이동
+      router.push("/board?page=0");
     } catch (err: any) {
       setError("로그인에 실패했습니다. 아이디나 비밀번호를 확인 해주세요!");
       setSuccess("");

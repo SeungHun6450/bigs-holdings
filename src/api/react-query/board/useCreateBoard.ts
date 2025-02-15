@@ -14,11 +14,6 @@ interface CreateBoardRequest {
 
 interface CreateBoardResponse {
   id: number;
-  title: string;
-  content: string;
-  category: string;
-  file?: File;
-  createdAt: string;
 }
 
 export const useCreateBoard = () => {

@@ -1,3 +1,4 @@
+import Header from "@/components/Header/Header";
 import ReactQueryProvider from "@/components/provider/ReactQueryProvider";
 import type { Metadata } from "next";
 import "./globals.css";
@@ -14,8 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <ReactQueryProvider>{children}</ReactQueryProvider>
+      <body className="bg-slate-100">
+        <ReactQueryProvider>
+          <Header />
+          {children}
+        </ReactQueryProvider>
       </body>
     </html>
   );

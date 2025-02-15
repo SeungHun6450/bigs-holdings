@@ -27,7 +27,7 @@ const BoardModify = () => {
       router.push("/board?page=0");
     } else if (!loading && !token) {
       alert("로그인 후 이용 가능합니다.");
-      window.location.href = "/";
+      router.push("/");
     } else {
       setTitle(post.title);
       setContent(post.content);

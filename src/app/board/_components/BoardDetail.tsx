@@ -37,7 +37,7 @@ const BoardDetail = ({ detail }: { detail: string }) => {
   useEffect(() => {
     if (!loading && !token) {
       alert("로그인 후 이용 가능합니다.");
-      window.location.href = "/";
+      router.push("/");
     }
   }, [loading, token]);
 

@@ -29,3 +29,14 @@ export const isTokenExpired = (token: string): boolean => {
   }
   return true; // 만료된 토큰으로 간주
 };
+
+export const getUserInfo = (token: string) => {
+  const decoded = decodeJWT(token);
+  if (decoded) {
+    return {
+      name: decoded.name,
+      username: decoded.username,
+    };
+  }
+  return null;
+};
