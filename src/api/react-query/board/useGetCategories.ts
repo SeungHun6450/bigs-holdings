@@ -1,7 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 
+interface Categories {
+  NOTICE: "공지";
+  ETC: "기타";
+  QNA: "Q&A";
+  FREE: "자유";
+}
+
 export const useGetCategories = (token: string) => {
-  return useQuery({
+  return useQuery<Categories, Error>({
     queryKey: ["categories", token],
     queryFn: async () => {
       const response = await fetch(
