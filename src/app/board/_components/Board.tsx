@@ -68,9 +68,12 @@ const Board = () => {
     router.push(`/board?page=${newPage}`);
   };
 
-  const loggedOut = () => {
-    authStore.clearTokens();
-    router.push("/");
+  const signOut = () => {
+    if (confirm("로그아웃 하시겠습니까?")) {
+      authStore.clearTokens();
+      alert("로그아웃 되었습니다!");
+      router.push("/");
+    }
   };
 
   return (
@@ -87,7 +90,7 @@ const Board = () => {
         </Link>
         {token && (
           <button
-            onClick={loggedOut}
+            onClick={signOut}
             className="bg-[#798385] text-white px-4 py-1.5 rounded hover:bg-[#a5b2b4]"
           >
             로그아웃
