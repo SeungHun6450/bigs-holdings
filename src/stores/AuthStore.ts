@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { makeAutoObservable } from "mobx";
 
 class AuthStore {
@@ -7,36 +8,31 @@ class AuthStore {
   constructor() {
     makeAutoObservable(this);
 
-    // SSR에서 실행되는 로직, Next.js이기에 발생
-    if (typeof window !== "undefined") {
-      // 로컬스토리지에서 토큰 가져오기
-      const storedAccessToken = localStorage.getItem("accessToken");
-      const storedRefreshToken = localStorage.getItem("refreshToken");
+    const storedAccessToken = Cookies.get("accessToken");
+    const storedRefreshToken = Cookies.get("refreshToken");
 
-      if (storedAccessToken) {
-        this.accessToken = storedAccessToken;
-      }
-      if (storedRefreshToken) {
-        this.refreshToken = storedRefreshToken;
-      }
+    if (storedAccessToken) {
+      this.accessToken = storedAccessToken;
+    }
+    if (storedRefreshToken) {
+      this.refreshToken = storedRefreshToken;
     }
   }
 
   setTokens(accessToken: string, refreshToken: string) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
-    localStorage.setItem("accessToken", accessToken); // 액세스 토큰을 로컬 스토리지에 저장
-    localStorage.setItem("refreshToken", refreshToken); // 리프레시 토큰을 로컬 스토리지에 저장
+    Cookies.set("accessToken", accessToken, { expires: 7 });
+    Cookies.set("refreshToken", refreshToken, { expires: 7 });
   }
 
   clearTokens() {
     this.accessToken = null;
     this.refreshToken = null;
-    localStorage.removeItem("accessToken"); // 로컬 스토리지에서 액세스 토큰 삭제
-    localStorage.removeItem("refreshToken"); // 로컬 스토리지에서 리프레시 토큰 삭제
+    Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
   }
 
-  // 액세스 토큰을 갱신하기 위한 메서드
   async refreshTokens() {
     const storedRefreshToken = this.refreshToken;
 
@@ -61,11 +57,11 @@ class AuthStore {
       }
 
       const data = await response.json();
-      this.setTokens(data.accessToken, data.refreshToken); // 새로운 토큰 설정
+      this.setTokens(data.accessToken, data.refreshToken);
     } catch (error) {
       console.error(error);
-      this.clearTokens(); // 갱신 실패 시 토큰 삭제
-      throw error; // 에러 다시 던지기
+      this.clearTokens();
+      throw error;
     }
   }
 }

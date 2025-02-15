@@ -1,6 +1,6 @@
 "use client";
 
-import { updatePost } from "@/api/auth";
+import { useUpdateBoard } from "@/api/react-query/board/useUpdateBoard";
 import { useAuth } from "@/hooks/useAuth";
 import boardStore from "@/stores/BoardStore";
 import { useRouter } from "next/navigation";
@@ -17,7 +17,6 @@ const BoardModify = () => {
   const router = useRouter();
   const { token, loading } = useAuth();
   const post = boardStore.selectedPost;
-
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [boardCategory, setBoardCategory] = useState("");
@@ -26,12 +25,15 @@ const BoardModify = () => {
     if (post && post.id === -1) {
       alert("올바른 게시판이 아닙니다.");
       router.push("/board?page=0");
+    } else if (!loading && !token) {
+      alert("로그인 후 이용 가능합니다.");
+      window.location.href = "/";
     } else {
       setTitle(post.title);
       setContent(post.content);
       setBoardCategory(post.boardCategory);
     }
-  }, [post]);
+  }, [post, token]);
 
   useEffect(() => {
     if (!loading && !token) {
@@ -39,7 +41,9 @@ const BoardModify = () => {
     }
   }, [loading, token]);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const updateBoardMutation = useUpdateBoard();
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!token) {
@@ -47,17 +51,22 @@ const BoardModify = () => {
       return;
     }
 
-    try {
-      await updatePost(token, post.id, {
-        title,
-        content,
-        category: boardCategory.toUpperCase(),
-      });
-      alert("게시글이 수정되었습니다!");
-      router.push("/board?page=0");
-    } catch (err: any) {
-      console.error(err);
-    }
+    updateBoardMutation.mutate(
+      {
+        token,
+        id: post.id,
+        boardData: {
+          title,
+          content,
+          category: boardCategory.toUpperCase(),
+        },
+      },
+      {
+        onSuccess: () => {
+          router.push("/board?page=0");
+        },
+      },
+    );
   };
 
   return (

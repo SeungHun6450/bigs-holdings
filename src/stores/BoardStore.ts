@@ -12,6 +12,8 @@ class BoardStore {
     title: string;
     content: string;
     boardCategory: string;
+    createdAt?: string;
+    imageUrl?: string | null;
   }) {
     this.selectedPost = post;
   }

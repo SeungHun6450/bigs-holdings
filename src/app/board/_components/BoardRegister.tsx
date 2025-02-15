@@ -1,6 +1,6 @@
 "use client";
 
-import { createPost } from "@/api/auth";
+import { useCreateBoard } from "@/api/react-query/board/useCreateBoard";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
@@ -18,6 +18,14 @@ const BoardRegister = () => {
   const [category, setCategory] = useState("");
   const router = useRouter();
   const { token, loading } = useAuth();
+  const createBoardMutation = useCreateBoard();
+
+  useEffect(() => {
+    if (!loading && !token) {
+      alert("로그인 후 이용 가능합니다.");
+      window.location.href = "/";
+    }
+  }, [loading, token]);
 
   useEffect(() => {
     if (!loading && !token) {
@@ -25,7 +33,7 @@ const BoardRegister = () => {
     }
   }, [loading, token]);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!token) {
@@ -33,17 +41,21 @@ const BoardRegister = () => {
       return;
     }
 
-    try {
-      await createPost(token, {
-        title,
-        content,
-        category: category.toUpperCase(),
-      });
-      alert("글이 등록되었습니다!");
-      router.push("/board?page=0");
-    } catch (err: any) {
-      console.error(err);
-    }
+    createBoardMutation.mutate(
+      {
+        token,
+        boardData: {
+          title,
+          content,
+          category: category.toUpperCase(),
+        },
+      },
+      {
+        onSuccess: () => {
+          router.push("/board?page=0");
+        },
+      },
+    );
   };
 
   return (

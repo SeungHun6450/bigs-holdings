@@ -1,9 +1,10 @@
 "use client";
 
 import { signIn } from "@/api/auth";
+import { useAuth } from "@/hooks/useAuth";
 import authStore from "@/stores/AuthStore";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const SignIn = () => {
   const router = useRouter();
@@ -11,6 +12,14 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const { token } = useAuth();
+
+  useEffect(() => {
+    if (token) {
+      window.location.href = "/board?page=0";
+    }
+  }, [token]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

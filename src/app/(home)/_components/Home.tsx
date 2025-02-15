@@ -1,6 +1,18 @@
-import Link from "next/link";
+"use client";
 
-const page = () => {
+import { useAuth } from "@/hooks/useAuth";
+import Link from "next/link";
+import { useEffect } from "react";
+
+const Home = () => {
+  const { token } = useAuth();
+
+  useEffect(() => {
+    if (token) {
+      window.location.href = "/board?page=0";
+    }
+  }, [token]);
+
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-4xl font-bold">
@@ -23,4 +35,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Home;

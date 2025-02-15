@@ -1,6 +1,7 @@
 "use client";
 
-import { deletePost } from "@/api/auth";
+import { useDeleteBoard } from "@/api/react-query/board/useDeleteBoard";
+import { useGetBoards } from "@/api/react-query/board/useGetBoards";
 import {
   Pagination,
   PaginationLink,
@@ -8,38 +9,58 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useAuth } from "@/hooks/useAuth";
-import { useBoardData } from "@/hooks/useBoardData";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+
+const categoryMap: Record<string, string> = {
+  NOTICE: "공지",
+  ETC: "기타",
+  QNA: "Q&A",
+  FREE: "자유",
+};
 
 const Board = () => {
-  const { token, error: authError } = useAuth();
+  const { token, loading } = useAuth();
 
   const router = useRouter();
   const searchParams = useSearchParams();
   const page = Number(searchParams.get("page")) || 0;
+
+  useEffect(() => {
+    if (!loading && !token) {
+      alert("로그인 후 이용 가능합니다.");
+      window.location.href = "/";
+    }
+  }, [loading, token]);
+
   const {
-    categories,
-    posts,
+    data: boardData,
     error: boardError,
-    loading: boardLoading,
-    totalPages,
-  } = useBoardData(token || "", page);
+    isLoading: boardLoading,
+  } = useGetBoards({ token: token || "", page, size: 10 }, !!token && !loading);
 
-  const error = authError || boardError;
+  const boards = boardData?.content || [];
+  const totalPages = boardData?.totalPages || 0;
 
-  const handleDelete = async (e: React.MouseEvent, id: number) => {
+  const deleteBoardMutation = useDeleteBoard();
+
+  const handleDelete = (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
-    e.preventDefault();
 
     if (!confirm("정말 삭제하시겠습니까?")) return;
 
-    try {
-      await deletePost(token || "", id);
-      router.push(`/board?page=0`);
-    } catch (err) {
-      console.error("게시글 삭제 오류:", err);
-    }
+    deleteBoardMutation.mutate(
+      { token: token || "", id },
+      {
+        onSuccess: () => {
+          router.push(`/board?page=0`);
+        },
+        onError: (err) => {
+          console.error("게시글 삭제 오류:", err);
+        },
+      },
+    );
   };
 
   const handlePageChange = (newPage: number) => {
@@ -63,11 +84,13 @@ const Board = () => {
       <div>
         {boardLoading ? (
           <p>로딩 중...</p>
-        ) : !boardLoading && posts.length === 0 ? (
+        ) : boardError ? (
+          <p className="text-red-500">게시글을 불러오는 데 실패했습니다.</p>
+        ) : boards.length === 0 ? (
           <p>게시글이 없습니다.</p>
         ) : (
           <ul className="flex flex-col w-full">
-            {posts.map((item) => (
+            {boards.map((item) => (
               <li
                 key={item.id}
                 className="border-b py-2 flex flex-row items-center gap-x-4"
@@ -75,7 +98,7 @@ const Board = () => {
                 <Link href={`/board/${item.id}`} className="flex-grow">
                   <div className="flex items-center gap-x-4 cursor-pointer">
                     <div className="text-gray-700">
-                      {categories[item.category]}
+                      {categoryMap[item.category] || "기타"}
                     </div>
                     <strong>{item.title}</strong>
                     <div className="text-gray-700">
@@ -94,7 +117,6 @@ const Board = () => {
             ))}
           </ul>
         )}
-        {error && <p className="text-red-500">{error}</p>}
       </div>
 
       <Pagination className="mt-4">
