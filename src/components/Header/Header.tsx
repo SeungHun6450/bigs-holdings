@@ -55,7 +55,7 @@ const Header = observer(() => {
           </p>
           <button
             onClick={signOut}
-            className="bg-[#798385] text-white rounded hover:bg-[#a5b2b4] xl:px-4 py-1.5 lg:px-3 md:px-2 sm:px-2 xl:text-sm lg:text-sm md:text-xs sm:text-xs"
+            className="bg-[#798385] text-white rounded hover:bg-[#798385]/70 xl:px-4 py-1.5 lg:px-3 md:px-2 sm:px-2 xl:text-sm lg:text-sm md:text-xs sm:text-xs"
           >
             로그아웃
           </button>

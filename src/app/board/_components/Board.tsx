@@ -1,6 +1,5 @@
 "use client";
 
-import { useDeleteBoard } from "@/api/react-query/board/useDeleteBoard";
 import { useGetBoards } from "@/api/react-query/board/useGetBoards";
 import {
   Pagination,
@@ -43,45 +42,19 @@ const Board = () => {
   const boards = boardData?.content || [];
   const totalPages = boardData?.totalPages || 0;
 
-  const deleteBoardMutation = useDeleteBoard();
-
-  const handleDelete = (e: React.MouseEvent, id: number) => {
-    e.stopPropagation();
-
-    if (!confirm("정말 삭제하시겠습니까?")) return;
-
-    deleteBoardMutation.mutate(
-      { token: token || "", id },
-      {
-        onSuccess: () => {
-          router.push(`/board?page=0`);
-        },
-        onError: (err) => {
-          console.error("게시글 삭제 오류:", err);
-        },
-      },
-    );
-  };
-
   const handlePageChange = (newPage: number) => {
     router.push(`/board?page=${newPage}`);
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen m-4">
-      <Link href="/board/?page=0">
-        <h1 className="text-2xl font-bold mb-4">게시판</h1>
-      </Link>
-
-      <div className="flex gap-x-4">
-        <Link href="/board/board-register">
-          <button className="bg-[#2aa7be] text-white px-4 py-1.5 rounded hover:bg-[#5db0bf]">
-            글쓰기
-          </button>
+    <div className="flex flex-col items-center min-h-screen m-4 max-w-full">
+      <div className="w-full max-w-6xl overflow-hidden whitespace-nowrap overflow-ellipsis">
+        <Link href="/board/?page=0">
+          <h1 className="xl:text-2xl lg:text-xl md:text-lg sm:text-lg font-bold text-center my-8">
+            BIGS CO.,LTD Boards
+          </h1>
         </Link>
-      </div>
 
-      <div>
         {boardLoading ? (
           <p>로딩 중...</p>
         ) : boardError ? (
@@ -89,61 +62,65 @@ const Board = () => {
         ) : boards.length === 0 ? (
           <p>게시글이 없습니다.</p>
         ) : (
-          <ul className="flex flex-col w-full">
+          <ul className="flex flex-col">
             {boards.map((item) => (
-              <li
-                key={item.id}
-                className="border-b py-2 flex flex-row items-center gap-x-4"
-              >
+              <li key={item.id} className="border-b py-2 flex flex-row">
                 <Link href={`/board/${item.id}`} className="flex-grow">
-                  <div className="flex items-center gap-x-4 cursor-pointer">
-                    <div className="text-gray-700">
-                      {categoryMap[item.category] || "기타"}
+                  <div
+                    className="flex items-center cursor-pointer gap-x-4 lg:gap-x-3 md:gap-x-2 sm:gap-x-2
+                  xl:text-base lg:text-sm md:text-xs sm:text-xs"
+                  >
+                    <div className="text-gray-700 md:w-8 sm:w-8 w-12">
+                      {"[" + categoryMap[item.category] + "]" || "[기타]"}
                     </div>
-                    <strong>{item.title}</strong>
-                    <div className="text-gray-700">
-                      {new Date(item.createdAt).toLocaleString()}
-                    </div>
+                    <strong className="w-full overflow-hidden whitespace-nowrap overflow-ellipsis">
+                      {item.title}
+                    </strong>
                   </div>
                 </Link>
-
-                <button
-                  onClick={(e) => handleDelete(e, item.id)}
-                  className="bg-red-500 text-white py-1 px-2 rounded-md text-sm hover:bg-red-400"
-                >
-                  삭제
-                </button>
               </li>
             ))}
           </ul>
         )}
-      </div>
 
-      <Pagination className="mt-4">
-        {page > 0 && (
-          <PaginationPrevious
-            onClick={() => handlePageChange(page - 1)}
-            className="cursor-pointer"
-          />
-        )}
-        {Array.from({ length: totalPages }).map((_, index) => (
-          <PaginationLink
-            key={index}
-            isActive={index === page}
-            onClick={() => handlePageChange(index)}
-            className="cursor-pointer"
-          >
-            {index + 1}
-          </PaginationLink>
-        ))}
-        {page < totalPages - 1 && (
-          <PaginationNext
-            onClick={() => handlePageChange(page + 1)}
-            className="cursor-pointer"
-            aria-disabled={page === 0}
-          />
-        )}
-      </Pagination>
+        <div className="flex justify-end w-full mt-4">
+          <Link href="/board/board-register">
+            <button
+              className="bg-primary text-white rounded hover:bg-primary/70
+            xl:text-base lg:text-sm md:text-xs sm:text-xs
+            xl:px-3 py-1.5 lg:px-2.5 md:px-2 sm:px-1.5 sm:py-1"
+            >
+              글쓰기
+            </button>
+          </Link>
+        </div>
+
+        <Pagination className="mt-4 items-center">
+          {page > 0 && (
+            <PaginationPrevious
+              onClick={() => handlePageChange(page - 1)}
+              className="cursor-pointer xl:text-base lg:text-sm md:text-xs sm:text-xs lg:pr-2 md:pr-0 sm:pr-0"
+            />
+          )}
+          {Array.from({ length: totalPages }).map((_, index) => (
+            <PaginationLink
+              key={index}
+              isActive={index === page}
+              onClick={() => handlePageChange(index)}
+              className="cursor-pointer xl:text-base lg:text-sm md:text-xs sm:text-xs lg:size-9 md:size-8 sm:size-8"
+            >
+              {index + 1}
+            </PaginationLink>
+          ))}
+          {page < totalPages - 1 && (
+            <PaginationNext
+              onClick={() => handlePageChange(page + 1)}
+              className="cursor-pointer xl:text-base lg:text-sm md:text-xs sm:text-xs lg:pl-2 md:pl-0 sm:pl-0"
+              aria-disabled={page === 0}
+            />
+          )}
+        </Pagination>
+      </div>
     </div>
   );
 };

@@ -82,7 +82,7 @@ const BoardDetail = ({ detail }: { detail: string }) => {
   return (
     <div className="flex flex-col items-center justify-center max-w-full m-4">
       {board ? (
-        <div className="w-full max-w-6xl">
+        <div className="w-full max-w-6xl mt-8">
           <ArrowLeftIcon onClick={goToBack} className="cursor-pointer" />
           <div className="flex flex-row items-center justify-between mt-4 text-sm text-gray-700 pb-4 border-b xl:text-base lg:text-sm md:text-xs sm:text-xs">
             <p>{"[" + categoryMap[board.boardCategory] + "]" || "[기타]"}</p>
@@ -99,18 +99,20 @@ const BoardDetail = ({ detail }: { detail: string }) => {
             {board.content}
           </p>
 
-          <div className="py-2 flex flex-row items-center justify-end xl:gap-x-4 lg:gap-x-4 md:gap-x-3 sm:gap-x-2">
+          <div className="py-2 flex flex-row items-center justify-end border-t xl:gap-x-4 lg:gap-x-3 md:gap-x-2 sm:gap-x-1">
             <button
               onClick={() => handleEdit(board)}
-              className="bg-blue-500 text-white py-1 px-2 rounded-md text-sm hover:bg-blue-400
-              xl:text-base lg:text-sm md:text-xs sm:text-xs"
+              className="bg-primary text-white rounded-md text-sm hover:bg-primary/70
+              xl:text-base lg:text-sm md:text-xs sm:text-xs
+              xl:px-3 py-1.5 lg:px-2.5 md:px-2 sm:px-1.5 sm:py-1"
             >
               수정
             </button>
             <button
               onClick={() => handleDelete(board.id)}
-              className="bg-red-500 text-white py-1 px-2 rounded-md text-sm hover:bg-red-400
-              xl:text-base lg:text-sm md:text-xs sm:text-xs"
+              className="bg-red-500 text-white rounded-md text-sm hover:bg-red/70
+              xl:text-base lg:text-sm md:text-xs sm:text-xs
+              xl:px-3 py-1.5 lg:px-2.5 md:px-2 sm:px-1.5 sm:py-1"
             >
               삭제
             </button>

@@ -58,56 +58,84 @@ const BoardRegister = () => {
     );
   };
 
+  const goToBack = () => {
+    router.back();
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen m-4">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col items-center justify-center w-full max-w-xl"
-      >
-        <div className="flex flex-row justify-start w-full">
-          <label className="block text-lg font-bold w-24">제목</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            className="border-2 rounded-sm max-w-lg w-full"
-          />
-        </div>
-
-        <div className="flex flex-row justify-start mt-4 w-full">
-          <label className="block text-lg font-bold w-24">내용</label>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            required
-            className="h-52 w-full max-w-lg border-2 rounded-lg"
-          />
-        </div>
-
-        <div className="flex flex-row justify-start mt-4 w-full">
-          <label className="block text-lg font-bold w-20">카테고리</label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            required
-            className="border-2 rounded-sm w-full max-w-48"
-          >
-            <option value="">카테고리를 선택하세요</option>
-            {CATEGORIES.map(({ key, label }) => (
-              <option key={key} value={key}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button
-          type="submit"
-          className="bg-[#2aa7be] text-white py-2 px-4 mt-4 rounded-md hover:bg-[#3590a0]"
+    <div className="flex flex-col items-center justify-center min-h-screen max-w-full">
+      <div className="w-full max-w-6xl items-center">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col items-center justify-center w-full m-4"
         >
-          게시글 등록
-        </button>
-      </form>
+          <div className="flex flex-row justify-center mt-4 w-full">
+            <label className="block xl:text-lg lg:text-lg md:text-base sm:text-sm font-bold w-24 mr-4 lg:mr-3 md:mr-2 sm:mr-2">
+              카테고리
+            </label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              required
+              className="border-2 rounded-sm max-w-lg w-full xl:text-base lg:text-base md:text-sm sm:text-xs"
+            >
+              <option value="">카테고리를 선택하세요</option>
+              {CATEGORIES.map(({ key, label }) => (
+                <option key={key} value={key}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-row justify-center mt-4 w-full">
+            <label className="block xl:text-lg lg:text-lg md:text-base sm:text-sm font-bold w-24 mr-4 lg:mr-3 md:mr-2 sm:mr-2">
+              제목
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              className="border-2 rounded-sm max-w-lg w-full xl:text-base lg:text-base md:text-sm sm:text-xs"
+            />
+          </div>
+
+          <div className="flex flex-row justify-center mt-4 w-full">
+            <label className="block xl:text-lg lg:text-lg md:text-base sm:text-sm font-bold w-24 mr-4 lg:mr-3 md:mr-2 sm:mr-2">
+              내용
+            </label>
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              required
+              className="h-52 w-full max-w-lg border-2 rounded-lg xl:text-base lg:text-base md:text-sm sm:text-xs"
+            />
+          </div>
+
+          <div className="flex flex-row gap-x-4 lg:gap-x-3 md:gap-x-2 sm:gap-x-1">
+            <button
+              onClick={goToBack}
+              type="button"
+              className="bg-red-500 text-white rounded hover:bg-red-500/70
+              xl:mt-8 lg:mt-7 md:mt-6 sm:mt-5
+              xl:text-base lg:text-sm md:text-xs sm:text-xs
+              xl:px-3 py-1.5 lg:px-2.5 md:px-2 sm:px-1.5 sm:py-1"
+            >
+              취소하기
+            </button>
+            <button
+              type="submit"
+              className="bg-primary text-white rounded hover:bg-primary/70
+              xl:mt-8 lg:mt-7 md:mt-6 sm:mt-5
+              xl:text-base lg:text-sm md:text-xs sm:text-xs
+              xl:px-3 py-1.5 lg:px-2.5 md:px-2 sm:px-1.5 sm:py-1"
+            >
+              등록하기
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
