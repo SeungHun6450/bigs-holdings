@@ -11,26 +11,22 @@ import { useAuth } from "@/hooks/useAuth";
 import { useBoardData } from "@/hooks/useBoardData";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 
 const Board = () => {
   const { token, error: authError } = useAuth();
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const page = Number(searchParams.get("page")) || 0;
   const {
     categories,
     posts,
     error: boardError,
     loading: boardLoading,
-    refreshAndLoadBoardData,
     totalPages,
-    currentPage,
-    loadPage,
-  } = useBoardData(token || "");
-
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  } = useBoardData(token || "", page);
 
   const error = authError || boardError;
-  const page = Number(searchParams.get("page")) || 0;
 
   const handleDelete = async (e: React.MouseEvent, id: number) => {
     e.stopPropagation();
@@ -40,22 +36,15 @@ const Board = () => {
 
     try {
       await deletePost(token || "", id);
-      await refreshAndLoadBoardData(0);
+      router.push(`/board?page=0`);
     } catch (err) {
       console.error("게시글 삭제 오류:", err);
     }
   };
 
   const handlePageChange = (newPage: number) => {
-    loadPage(newPage);
     router.push(`/board?page=${newPage}`);
   };
-
-  useEffect(() => {
-    if (token) {
-      refreshAndLoadBoardData(Number(page));
-    }
-  }, [token, page]);
 
   return (
     <div className="flex flex-col items-center min-h-screen m-4">
@@ -109,24 +98,27 @@ const Board = () => {
       </div>
 
       <Pagination className="mt-4">
-        {currentPage > 0 && (
+        {page > 0 && (
           <PaginationPrevious
-            onClick={() => handlePageChange(currentPage - 1)}
+            onClick={() => handlePageChange(page - 1)}
+            className="cursor-pointer"
           />
         )}
         {Array.from({ length: totalPages }).map((_, index) => (
           <PaginationLink
             key={index}
-            isActive={index === currentPage}
+            isActive={index === page}
             onClick={() => handlePageChange(index)}
+            className="cursor-pointer"
           >
             {index + 1}
           </PaginationLink>
         ))}
-        {currentPage === page && currentPage < totalPages - 1 && (
+        {page < totalPages - 1 && (
           <PaginationNext
-            onClick={() => handlePageChange(currentPage + 1)}
-            aria-disabled={currentPage === 0}
+            onClick={() => handlePageChange(page + 1)}
+            className="cursor-pointer"
+            aria-disabled={page === 0}
           />
         )}
       </Pagination>

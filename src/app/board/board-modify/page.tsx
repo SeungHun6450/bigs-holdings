@@ -1,4 +1,4 @@
-import BoardModify from "@/components/Board/BoardModify";
+import BoardModify from "@/app/board/_components/BoardModify";
 
 const page = () => {
   return <BoardModify />;

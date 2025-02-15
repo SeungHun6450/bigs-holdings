@@ -39,7 +39,8 @@ const BoardRegister = () => {
         content,
         category: category.toUpperCase(),
       });
-      router.push("0");
+      alert("글이 등록되었습니다!");
+      router.push("/board?page=0");
     } catch (err: any) {
       console.error(err);
     }
