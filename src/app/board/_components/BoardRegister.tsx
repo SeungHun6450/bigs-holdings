@@ -67,7 +67,7 @@ const BoardRegister = () => {
       <div className="w-full max-w-6xl items-center">
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col items-center justify-center w-full m-4"
+          className="flex flex-col items-center justify-start m-4"
         >
           <div className="flex flex-row justify-center mt-4 w-full">
             <label className="block xl:text-lg lg:text-lg md:text-base sm:text-sm font-bold w-24 mr-4 lg:mr-3 md:mr-2 sm:mr-2">
