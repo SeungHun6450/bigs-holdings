@@ -38,22 +38,31 @@ const Header = observer(() => {
 
   return (
     <div className="flex justify-between items-center w-full px-4 h-16 bg-white">
-      <Image src={Logo} alt={"로고"} width={50} height={50} />
-      {loading ? (
-        <p>로그인 확인 중...</p>
-      ) : authStore.accessToken ? (
-        <div className="flex flex-row items-center">
-          <span className="mr-4 font-bold">{`${userInfo?.name}(${userInfo?.username})`}</span>
+      <Link href={userInfo ? "/board" : "/"}>
+        <Image
+          src={Logo}
+          alt={"로고"}
+          width={50}
+          height={50}
+          className="xl:w-16 xl:h-10 lg:w-14 lg:h-9 md:w-12 md:h-8 sm:w-10 sm:h-7"
+        />
+      </Link>
+      {authStore.accessToken ? (
+        <div className="flex flex-row items-center xl:gap-x-4 lg:gap-x-3 md:gap-x-2 sm:gap-x-1 xl:text-base lg:text-sm md:text-xs sm:text-xs">
+          <p className="font-bold md:flex md:flex-col md:items-center sm:flex sm:flex-col sm:items-center">
+            <span>{`${userInfo?.name}`}</span>
+            <span>{`(${userInfo?.username})`}</span>
+          </p>
           <button
             onClick={signOut}
-            className="bg-[#798385] text-white px-4 py-1.5 rounded hover:bg-[#a5b2b4]"
+            className="bg-[#798385] text-white rounded hover:bg-[#a5b2b4] xl:px-4 py-1.5 lg:px-3 md:px-2 sm:px-2 xl:text-sm lg:text-sm md:text-xs sm:text-xs"
           >
             로그아웃
           </button>
         </div>
       ) : (
         <Link href="/sign-in">
-          <button className="bg-[#2aa7be] text-white px-4 py-1.5 rounded-md hover:bg-[#3590a0]">
+          <button className="bg-black text-white rounded-md hover:bg-black/70 xl:px-4 py-1.5 lg:px-3 md:px-2 sm:px-2 xl:text-sm lg:text-sm md:text-xs sm:text-xs">
             로그인
           </button>
         </Link>

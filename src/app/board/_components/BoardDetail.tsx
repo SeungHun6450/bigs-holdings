@@ -4,6 +4,7 @@ import { useDeleteBoard } from "@/api/react-query/board/useDeleteBoard";
 import { useGetOneBoard } from "@/api/react-query/board/useGetOneBoard";
 import { useAuth } from "@/hooks/useAuth";
 import boardStore from "@/stores/BoardStore";
+import { ArrowLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -70,48 +71,65 @@ const BoardDetail = ({ detail }: { detail: string }) => {
     );
   };
 
+  const goToBack = () => {
+    router.back();
+  };
+
   if (isLoading) {
     return <p>로딩 중...</p>;
   }
 
-  if (error) {
-    return <p>게시글 조회에 실패했습니다: {error.message}</p>;
-  }
-
   return (
-    <>
+    <div className="flex flex-col items-center justify-center max-w-full m-4">
       {board ? (
-        <div className="p-4">
-          <h1 className="text-2xl font-bold">{board.title}</h1>
-          <div className="text-gray-700 mb-4">
-            {categoryMap[board.boardCategory] || "기타"}
+        <div className="w-full max-w-6xl">
+          <ArrowLeftIcon onClick={goToBack} className="cursor-pointer" />
+          <div className="flex flex-row items-center justify-between mt-4 text-sm text-gray-700 pb-4 border-b xl:text-base lg:text-sm md:text-xs sm:text-xs">
+            <p>{"[" + categoryMap[board.boardCategory] + "]" || "[기타]"}</p>
+            <p>
+              {board.createdAt
+                ? new Date(board.createdAt).toLocaleString()
+                : "날짜 정보 없음"}
+            </p>
           </div>
-          <div className="text-gray-600 mb-4">
-            {board.createdAt
-              ? new Date(board.createdAt).toLocaleString()
-              : "날짜 정보 없음"}
-          </div>
-          <p>{board.content}</p>
+          <h1 className="text-2xl lg:text-xl md:text-lg sm:text-base font-bold mt-4">
+            {board.title}
+          </h1>
+          <p className="mt-8 min-h-80 xl:text-base lg:text-sm md:text-xs sm:text-xs">
+            {board.content}
+          </p>
 
-          <div className="border-b py-2 flex flex-row items-center gap-x-4">
+          <div className="py-2 flex flex-row items-center justify-end xl:gap-x-4 lg:gap-x-4 md:gap-x-3 sm:gap-x-2">
             <button
               onClick={() => handleEdit(board)}
-              className="bg-blue-500 text-white py-1 px-2 rounded-md text-sm hover:bg-blue-400"
+              className="bg-blue-500 text-white py-1 px-2 rounded-md text-sm hover:bg-blue-400
+              xl:text-base lg:text-sm md:text-xs sm:text-xs"
             >
               수정
             </button>
             <button
               onClick={() => handleDelete(board.id)}
-              className="bg-red-500 text-white py-1 px-2 rounded-md text-sm hover:bg-red-400"
+              className="bg-red-500 text-white py-1 px-2 rounded-md text-sm hover:bg-red-400
+              xl:text-base lg:text-sm md:text-xs sm:text-xs"
             >
               삭제
             </button>
           </div>
         </div>
       ) : (
-        !loading && !isLoading && <p>게시글을 찾을 수 없습니다.</p>
+        !loading &&
+        !isLoading && (
+          <p className="xl:text-base lg:text-sm md:text-xs sm:text-xs">
+            게시글을 찾을 수 없습니다.
+          </p>
+        )
       )}
-    </>
+      {error && (
+        <p className="xl:text-base lg:text-sm md:text-xs sm:text-xs">
+          {error.message}
+        </p>
+      )}
+    </div>
   );
 };
 

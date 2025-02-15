@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import authStore from "@/stores/AuthStore";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import SignInInputFiled from "./SignInInputFiled";
 
 const SignIn = () => {
   const router = useRouter();
@@ -44,37 +45,29 @@ const SignIn = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen m-4">
-      <h2 className="text-2xl font-bold text-center">로그인</h2>
+      <h2 className="xl:text-2xl lg:text-xl md:text-lg sm:text-lg font-bold text-center">
+        로그인
+      </h2>
       <form onSubmit={handleSubmit} className="mt-4 w-full max-w-xl">
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            이메일
-          </label>
-          <input
-            type="email"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-bg-[#2aa7be]"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            비밀번호
-          </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-bg-[#2aa7be]"
-          />
-        </div>
+        <SignInInputFiled
+          label="이메일"
+          type="email"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
+        <SignInInputFiled
+          label="비밀번호"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
 
         <button
           type="submit"
-          className="w-full bg-[#2aa7be] text-white py-2 rounded-md hover:bg-[#3590a0]"
+          className="w-full bg-primary text-white py-2 rounded-md hover:bg-primary/70
+          xl:text-base lg:text-base md:text-md sm:text-sm"
         >
           로그인
         </button>
